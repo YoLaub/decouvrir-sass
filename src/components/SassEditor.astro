@@ -1,0 +1,69 @@
+---
+interface Props { initial: string; label?: string }
+const { initial, label = "Modifie le code, le CSS se met à jour" } = Astro.props;
+---
+<figure class="editor" data-sass-editor>
+  <figcaption>{label}</figcaption>
+  <div class="panes">
+    <div class="pane">
+      <label>SCSS (ce que tu écris)</label>
+      <textarea spellcheck="false" aria-label="Code SCSS">{initial}</textarea>
+    </div>
+    <div class="pane">
+      <label>CSS (ce que lit le navigateur)</label>
+      <p class="err" role="alert" hidden></p>
+      <pre class="out" aria-live="polite"></pre>
+    </div>
+  </div>
+</figure>
+
+<script>
+  import { compileScss } from "../lib/compile";
+
+  document.querySelectorAll<HTMLElement>("[data-sass-editor]").forEach((root) => {
+    const input = root.querySelector("textarea")!;
+    const out = root.querySelector<HTMLElement>(".out")!;
+    const err = root.querySelector<HTMLElement>(".err")!;
+
+    const run = () => {
+      const result = compileScss(input.value);
+      if (result.ok) {
+        out.textContent = result.css;
+        out.classList.remove("stale");
+        err.hidden = true;
+      } else {
+        const where = result.line ? ` (ligne ${result.line}, colonne ${result.column})` : "";
+        err.textContent = `Erreur : ${result.message}${where}`;
+        err.hidden = false;
+        out.classList.add("stale");
+      }
+    };
+
+    input.addEventListener("input", run);
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab") return;
+      event.preventDefault();
+      const { selectionStart: s, selectionEnd: e } = input;
+      input.setRangeText("  ", s, e, "end");
+      run();
+    });
+    run();
+  });
+</script>
+
+<style>
+  .editor { margin: 20px 0; padding: 0; }
+  figcaption { color: var(--muted); font-size: 16px; margin-bottom: 8px; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .panes { grid-template-columns: 1fr; } }
+  label { display: block; font-weight: 700; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  textarea, .out {
+    width: 100%; min-height: 260px; margin: 0; padding: 16px; border-radius: 12px;
+    background: var(--code-bg); color: var(--code-ink); border: 2px solid transparent;
+    font: 16px/1.6 "JetBrains Mono", ui-monospace, monospace; white-space: pre-wrap; tab-size: 2;
+  }
+  textarea { resize: vertical; }
+  textarea:focus { outline: none; border-color: var(--accent); }
+  .out.stale { opacity: 0.35; }
+  .err { margin: 0 0 8px; padding: 10px 14px; border-radius: 10px; background: #fff0f0; color: #a11; border: 1px solid var(--err); font-weight: 600; }
+</style>

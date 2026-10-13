@@ -1,0 +1,11 @@
+---
+import Base from "../layouts/Base.astro";
+const base = import.meta.env.BASE_URL;
+---
+<Base title="Accueil">
+  <h1>Découvrir Sass pour structurer son CSS</h1>
+  <p class="lead">Le détail du cours, avec un éditeur pour tester en direct.</p>
+  <ul>
+    <li><a href={`${base}variables`}>Variables</a></li>
+  </ul>
+</Base>

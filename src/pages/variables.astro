@@ -1,0 +1,23 @@
+---
+import Base from "../layouts/Base.astro";
+import SassEditor from "../components/SassEditor.astro";
+
+const variables = `$primary-color: #3498db;
+$spacing-unit: 8px;
+
+.button {
+  background: $primary-color;
+  padding: $spacing-unit * 2;
+}
+`;
+---
+<Base title="Variables">
+  <h1>Une variable Sass remplace une valeur répétée</h1>
+  <p class="lead">On déclare la valeur une fois, on la référence partout. Comme une constante de configuration en backend.</p>
+
+  <h2>À toi de jouer</h2>
+  <p>Change <code>#3498db</code> en une autre couleur : le CSS de droite change aux endroits où la variable est utilisée.</p>
+  <SassEditor initial={variables} />
+
+  <p>Essaie aussi de faire une faute dans le nom : écris <code>$primry-color</code> dans <code>.button</code> et lis le message.</p>
+</Base>
