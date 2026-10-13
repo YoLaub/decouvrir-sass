@@ -1,7 +1,10 @@
 ---
+import { neighbors } from "../lib/pages";
 interface Props { title: string }
 const { title } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const slug = Astro.url.pathname.replace(base, "").replace(/^\/|\/$/g, "");
+const { prev, next } = neighbors(slug);
 ---
 <!doctype html>
 <html lang="fr">
@@ -15,7 +18,15 @@ const base = import.meta.env.BASE_URL;
       <a class="brand" href={base}>Découvrir Sass</a>
       <span class="tag">Formation CDA</span>
     </header>
-    <main><slot /></main>
+    <main>
+      <slot />
+      {(prev || next) && (
+        <nav class="pager" aria-label="Navigation du cours">
+          {prev ? <a class="prev" href={`${base}${prev.slug}`}>← {prev.title}</a> : <span />}
+          {next ? <a class="next" href={`${base}${next.slug}`}>{next.title} →</a> : <span />}
+        </nav>
+      )}
+    </main>
   </body>
 </html>
 
@@ -35,4 +46,9 @@ const base = import.meta.env.BASE_URL;
   code { font-family: "JetBrains Mono", ui-monospace, monospace; background: #eceef5; padding: 1px 6px; border-radius: 5px; font-size: 0.9em; }
   .lead { color: var(--muted); font-size: 20px; margin: 0 0 24px; }
   a { color: #a23b74; }
+  .pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); font-weight: 700; }
+  .pager a { text-decoration: none; padding: 10px 16px; border: 2px solid var(--accent); border-radius: 10px; color: var(--ink); }
+  .pager a:hover { background: var(--accent); }
+  details { margin: 12px 0 24px; padding: 12px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  summary { cursor: pointer; font-weight: 700; }
 </style>

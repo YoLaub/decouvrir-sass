@@ -1,0 +1,46 @@
+---
+import Base from "../layouts/Base.astro";
+import SassEditor from "../components/SassEditor.astro";
+
+const alerts = `.alert-success { color: green; border: 1px solid green; }
+.alert-error { color: red; border: 1px solid red; }
+.alert-success-title { font-weight: bold; }
+`;
+---
+<Base title="Teste tes acquis">
+  <h1>Teste tes acquis</h1>
+  <p class="lead">Trois questions, une par compétence. Ce n'est pas noté : c'est pour toi. Essaie d'abord, ouvre la correction ensuite.</p>
+
+  <h2>1. Structurer une feuille de style</h2>
+  <p>Réécris ce CSS en Sass : au moins une variable, et <code>.alert-success-title</code> imbriqué dans <code>.alert-success</code>. Le CSS doit rester équivalent à droite.</p>
+  <SassEditor initial={alerts} label="Transforme le code de gauche, en gardant le même CSS à droite" />
+  <details>
+    <summary>Ce qui valide la réponse</summary>
+    <p>Une variable de couleur réutilisée, et une imbrication correcte, avec <code>&amp;</code> si besoin. Il n'y a pas une seule syntaxe attendue : toute solution qui respecte ces deux critères est bonne.</p>
+  </details>
+
+  <h2>2. Factoriser et justifier</h2>
+  <p>Tu as trois boutons qui ne changent que par leur couleur de fond. Choisis-tu un mixin ou un <code>@extend</code> ? Justifie en une phrase.</p>
+  <details>
+    <summary>Ce qui valide la réponse</summary>
+    <p>« Mixin », avec une justification qui parle du paramètre : la couleur est ce qui varie. « Parce que c'est mieux » ne suffit pas. Un <code>@extend</code> peut se défendre à condition d'expliquer correctement qu'aucun paramètre ne varie : ici c'est discutable dans les deux sens, la justification compte plus que le mot choisi.</p>
+  </details>
+
+  <h2>3. Compiler et diagnostiquer</h2>
+  <p>Voici un message d'erreur réel du compilateur. Qu'est-ce qui cause cette erreur, et comment la corriges-tu ?</p>
+  <pre class="err-sample"><code>Error: Undefined variable.
+  ╷
+3 │   color: $primry-color;
+  │          ^^^^^^^^^^^^^
+  ╵
+  style.scss 3:10</code></pre>
+  <details>
+    <summary>Ce qui valide la réponse</summary>
+    <p>Repérer la faute de frappe dans le nom de la variable à partir du message : <code>$primry-color</code> au lieu de <code>$primary-color</code>. Une réponse du type « il y a une erreur de syntaxe » est trop vague.</p>
+  </details>
+</Base>
+
+<style>
+  .err-sample { background: var(--code-bg); color: var(--code-ink); padding: 16px; border-radius: 12px; overflow-x: auto; }
+  .err-sample code { background: none; color: inherit; font-size: 17px; line-height: 1.5; }
+</style>
