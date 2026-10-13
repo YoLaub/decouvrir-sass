@@ -1,0 +1,16 @@
+{
+  "name": "sass-cda-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "astro": "^7.3.8",
+    "sass": "^1.105.1",
+    "vitest": "^5.0.4"
+  }
+}
