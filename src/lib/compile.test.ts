@@ -28,4 +28,25 @@ describe("compileScss", () => {
     const result = compileScss("");
     expect(result).toEqual({ ok: true, css: "" });
   });
+
+  describe("with partials", () => {
+    const files = { "_variables.scss": "$primary-color: #3498db;" };
+
+    it("resolves @use to a partial with a leading underscore", () => {
+      const result = compileScss("@use 'variables';\n.a { color: variables.$primary-color; }", { files });
+      expect(result.ok).toBe(true);
+      if (result.ok) expect(result.css).toContain("color: #3498db");
+    });
+
+    it("resolves @use to a file without underscore too", () => {
+      const result = compileScss("@use 'tokens';\n.a { color: tokens.$c; }", { files: { "tokens.scss": "$c: red;" } });
+      expect(result.ok).toBe(true);
+    });
+
+    it("fails with Sass's own message when the partial does not exist", () => {
+      const result = compileScss("@use 'missing';", { files });
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.message).toContain("Can't find stylesheet to import");
+    });
+  });
 });
