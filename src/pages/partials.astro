@@ -1,0 +1,28 @@
+---
+import Base from "../layouts/Base.astro";
+import SassEditor from "../components/SassEditor.astro";
+
+const variables = `$primary-color: #3498db;
+`;
+const style = `@use 'variables';
+
+.button {
+  background: variables.$primary-color;
+}
+`;
+---
+<Base title="Partials et @use">
+  <h1>@use importe un fichier annexe sans collision de noms</h1>
+  <p class="lead">Un partial est un fichier dont le nom commence par <code>_</code>. Il n'est jamais compilé seul, il est fait pour être importé. C'est la même logique qu'un <code>import</code> en Python ou en JS.</p>
+
+  <h2>À toi de jouer</h2>
+  <p>Deux fichiers ici : <code>_variables.scss</code> et <code>style.scss</code>. Change la couleur dans le partial et regarde le résultat.</p>
+  <SassEditor initial={style} partials={[{ name: "_variables.scss", content: variables }]} />
+
+  <h2>Deux détails à retenir</h2>
+  <ul>
+    <li>Le <code>_</code> s'écrit dans le nom du fichier, pas dans le <code>@use</code> : on écrit <code>@use 'variables'</code>.</li>
+    <li>Les noms importés sont rangés sous un espace de nom : <code>variables.$primary-color</code>, ce qui évite les collisions entre fichiers.</li>
+  </ul>
+  <p><code>@use</code> remplace <code>@import</code>, officiellement déprécié. Tu croiseras encore <code>@import</code> dans du code ancien.</p>
+</Base>

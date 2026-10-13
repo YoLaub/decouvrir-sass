@@ -1,0 +1,40 @@
+---
+import Base from "../layouts/Base.astro";
+import SassEditor from "../components/SassEditor.astro";
+
+const card = `.card {
+  padding: 16px;
+
+  &__title {
+    font-weight: bold;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+`;
+const deep = `.page {
+  .sidebar {
+    .widget {
+      .title {
+        color: red;
+      }
+    }
+  }
+}
+`;
+---
+<Base title="Imbrication">
+  <h1>L'imbrication reflète la hiérarchie HTML dans le CSS</h1>
+  <p class="lead">Plus besoin de retaper le sélecteur parent à chaque enfant. Le symbole <code>&amp;</code> désigne ce sélecteur parent.</p>
+
+  <h2>Le symbole &amp;</h2>
+  <p>Regarde à droite ce que deviennent <code>&amp;__title</code> et <code>&amp;:hover</code>. Utile pour les états comme <code>&amp;:hover</code> ou <code>&amp;.active</code>.</p>
+  <SassEditor initial={card} />
+
+  <h2>Le piège : au-delà de 3 niveaux</h2>
+  <p>Imbriquer sur plus de 3 niveaux produit des sélecteurs très spécifiques, difficiles à surcharger ensuite. Regarde le sélecteur final à droite : c'est lui qu'il faudrait battre en spécificité.</p>
+  <SassEditor initial={deep} label="Quatre niveaux d'imbrication, un sélecteur à rallonge" />
+  <p>Ce seuil de 3 niveaux est une recommandation de la communauté (Sass Guidelines, section « Nesting »), pas une limite du compilateur.</p>
+</Base>

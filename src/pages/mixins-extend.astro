@@ -1,0 +1,67 @@
+---
+import Base from "../layouts/Base.astro";
+import SassEditor from "../components/SassEditor.astro";
+
+const mixin = `$primary-color: #3498db;
+
+@mixin button-style($bg-color, $text-color: white) {
+  background: $bg-color;
+  color: $text-color;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  @include button-style($primary-color);
+}
+.btn-danger {
+  @include button-style(red);
+}
+`;
+const extend = `$primary-color: #3498db;
+
+%btn-base {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+}
+
+.btn-primary {
+  @extend %btn-base;
+  background: $primary-color;
+}
+.btn-danger {
+  @extend %btn-base;
+  background: red;
+}
+`;
+---
+<Base title="Mixins et @extend">
+  <h1>Un paramètre qui varie impose le mixin, pas @extend</h1>
+  <p class="lead">Les deux évitent de recopier des styles. Ils ne produisent pas le même CSS, et c'est ce qui guide le choix.</p>
+
+  <h2>Le mixin : une fonction qui retourne du CSS</h2>
+  <p>Chaque <code>@include</code> copie le bloc à l'endroit de l'appel, avec les valeurs passées en paramètres. Regarde le CSS à droite : le bloc est dupliqué.</p>
+  <SassEditor initial={mixin} />
+
+  <h2>@extend : regrouper les sélecteurs</h2>
+  <p><code>@extend</code> regroupe les sélecteurs qui partagent des règles au lieu de dupliquer le bloc. Étends un <em>placeholder</em> (<code>%nom</code>, jamais compilé seul) plutôt qu'une vraie classe, pour ne pas créer de lien caché entre deux composants sans rapport.</p>
+  <SassEditor initial={extend} />
+
+  <h2>Comment choisir</h2>
+  <table>
+    <thead><tr><th>Critère</th><th>Mixin</th><th>@extend</th></tr></thead>
+    <tbody>
+      <tr><td>Paramètres</td><td>Oui</td><td>Non</td></tr>
+      <tr><td>CSS généré</td><td>Dupliqué à chaque <code>@include</code></td><td>Sélecteurs regroupés, CSS plus compact</td></tr>
+      <tr><td>Risque</td><td>Fichier CSS plus lourd si beaucoup d'appels</td><td>Lien caché entre sélecteurs éloignés dans le code</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Règle pratique :</strong> besoin d'un paramètre, mixin, sans exception. Pas de paramètre et vraie relation de « même famille », <code>@extend</code> sur un placeholder. Dans le doute, mixin.</p>
+</Base>
+
+<style>
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; background: var(--panel); }
+  th, td { border: 1px solid var(--line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: #eceef5; }
+</style>

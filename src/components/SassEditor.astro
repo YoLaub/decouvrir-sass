@@ -1,13 +1,22 @@
 ---
-interface Props { initial: string; label?: string }
-const { initial, label = "Modifie le code, le CSS se met à jour" } = Astro.props;
+interface Partial { name: string; content: string }
+interface Props { initial: string; partials?: Partial[]; label?: string; mainName?: string }
+const { initial, partials = [], label = "Modifie le code, le CSS se met à jour", mainName = "style.scss" } = Astro.props;
 ---
 <figure class="editor" data-sass-editor>
   <figcaption>{label}</figcaption>
   <div class="panes">
-    <div class="pane">
-      <label>SCSS (ce que tu écris)</label>
-      <textarea spellcheck="false" aria-label="Code SCSS">{initial}</textarea>
+    <div class="pane sources">
+      {partials.map((p) => (
+        <div class="file">
+          <label>{p.name}</label>
+          <textarea class="partial" data-name={p.name} spellcheck="false" aria-label={`Code de ${p.name}`}>{p.content}</textarea>
+        </div>
+      ))}
+      <div class="file">
+        <label>{partials.length ? mainName : "SCSS (ce que tu écris)"}</label>
+        <textarea class="main" spellcheck="false" aria-label={`Code de ${mainName}`}>{initial}</textarea>
+      </div>
     </div>
     <div class="pane">
       <label>CSS (ce que lit le navigateur)</label>
@@ -21,12 +30,14 @@ const { initial, label = "Modifie le code, le CSS se met à jour" } = Astro.prop
   import { compileScss } from "../lib/compile";
 
   document.querySelectorAll<HTMLElement>("[data-sass-editor]").forEach((root) => {
-    const input = root.querySelector("textarea")!;
+    const main = root.querySelector<HTMLTextAreaElement>("textarea.main")!;
+    const partials = [...root.querySelectorAll<HTMLTextAreaElement>("textarea.partial")];
     const out = root.querySelector<HTMLElement>(".out")!;
     const err = root.querySelector<HTMLElement>(".err")!;
 
     const run = () => {
-      const result = compileScss(input.value);
+      const files = Object.fromEntries(partials.map((p) => [p.dataset.name!, p.value]));
+      const result = compileScss(main.value, { files });
       if (result.ok) {
         out.textContent = result.css;
         out.classList.remove("stale");
@@ -39,13 +50,14 @@ const { initial, label = "Modifie le code, le CSS se met à jour" } = Astro.prop
       }
     };
 
-    input.addEventListener("input", run);
-    input.addEventListener("keydown", (event) => {
-      if (event.key !== "Tab") return;
-      event.preventDefault();
-      const { selectionStart: s, selectionEnd: e } = input;
-      input.setRangeText("  ", s, e, "end");
-      run();
+    [main, ...partials].forEach((area) => {
+      area.addEventListener("input", run);
+      area.addEventListener("keydown", (event) => {
+        if (event.key !== "Tab") return;
+        event.preventDefault();
+        area.setRangeText("  ", area.selectionStart, area.selectionEnd, "end");
+        run();
+      });
     });
     run();
   });
@@ -54,14 +66,16 @@ const { initial, label = "Modifie le code, le CSS se met à jour" } = Astro.prop
 <style>
   .editor { margin: 20px 0; padding: 0; }
   figcaption { color: var(--muted); font-size: 16px; margin-bottom: 8px; }
-  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
   @media (max-width: 800px) { .panes { grid-template-columns: 1fr; } }
+  .file + .file { margin-top: 12px; }
   label { display: block; font-weight: 700; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
   textarea, .out {
-    width: 100%; min-height: 260px; margin: 0; padding: 16px; border-radius: 12px;
+    width: 100%; min-height: 200px; margin: 0; padding: 16px; border-radius: 12px;
     background: var(--code-bg); color: var(--code-ink); border: 2px solid transparent;
     font: 16px/1.6 "JetBrains Mono", ui-monospace, monospace; white-space: pre-wrap; tab-size: 2;
   }
+  textarea.partial { min-height: 90px; }
   textarea { resize: vertical; }
   textarea:focus { outline: none; border-color: var(--accent); }
   .out.stale { opacity: 0.35; }

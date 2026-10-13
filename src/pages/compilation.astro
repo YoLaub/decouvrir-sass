@@ -1,0 +1,53 @@
+---
+import Base from "../layouts/Base.astro";
+import SassEditor from "../components/SassEditor.astro";
+
+const undefinedVar = `$primary-color: #3498db;
+
+.button {
+  color: $primry-color;
+}
+`;
+const brace = `.card {
+  color: red;
+
+.title {
+  color: blue;
+}
+`;
+const missing = `@use 'variables';
+
+.button {
+  color: variables.$primary-color;
+}
+`;
+---
+<Base title="Compiler et diagnostiquer">
+  <h1>Le message du compilateur dit où chercher</h1>
+  <p class="lead">Ton navigateur ne lit pas le Sass. Un compilateur le transforme en CSS standard, et quand il échoue, il t'explique pourquoi.</p>
+
+  <h2>Compiler en ligne de commande</h2>
+  <pre class="cmd"><code>npx sass style.scss style.css --watch</code></pre>
+  <p><code>--watch</code> recompile à chaque sauvegarde. Dans un vrai projet, cette étape est en général prise en charge par un outil de build (Vite, webpack) : le principe reste identique.</p>
+
+  <h2>Lire une erreur avant de tout réécrire</h2>
+  <p>Chaque éditeur ci-dessous contient une erreur. Lis le message, repère la ligne, corrige. Ne réécris pas tout.</p>
+
+  <h3>1. Variable non définie</h3>
+  <p>L'erreur la plus fréquente : une faute de frappe dans le nom, ou un <code>@use</code> oublié.</p>
+  <SassEditor initial={undefinedVar} />
+
+  <h3>2. Accolade non fermée</h3>
+  <p>L'erreur pointe souvent une ligne bien après la vraie cause. Remonte jusqu'au dernier bloc resté ouvert.</p>
+  <SassEditor initial={brace} />
+
+  <h3>3. Import introuvable</h3>
+  <p>Le partial n'existe pas ou son nom est faux. Ici, aucun fichier <code>_variables.scss</code> n'est fourni : crée-le dans ta tête, puis compare avec la page <a href={`${import.meta.env.BASE_URL}partials`}>Partials</a>.</p>
+  <SassEditor initial={missing} />
+</Base>
+
+<style>
+  .cmd { background: var(--code-bg); color: var(--code-ink); padding: 16px; border-radius: 12px; overflow-x: auto; }
+  .cmd code { background: none; color: inherit; font-size: 18px; }
+  h3 { margin: 32px 0 4px; font-size: 22px; }
+</style>
