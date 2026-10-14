@@ -1,0 +1,55 @@
+---
+import Base from "../../layouts/Base.astro";
+import SassEditor from "../../components/SassEditor.astro";
+import Chrono from "../../components/Chrono.astro";
+import Notes from "../../components/Notes.astro";
+import { legacyCss, effectsPartial } from "../../lib/sauvetage";
+const base = import.meta.env.BASE_URL;
+const start = `// Refactorise legacy.css ici, sans rien changer visuellement.
+// Idée bonus : @use "effects"; pour un effet de survol sur les cartes.
+
+${legacyCss}`;
+---
+<Base title="Sauvetage du CSS legacy">
+  <h1>Le sauvetage du CSS legacy</h1>
+  <p class="lead">En petits groupes de trois, pendant environ 45 minutes, puis une restitution courte de 15 minutes.</p>
+
+  <h2>La mission</h2>
+  <p>Tu reprends le CSS d'un projet laissé par un développeur parti sans documentation : situation que tu croiseras en vrai. Le fichier fonctionne, mais il est pénible à maintenir : des couleurs répétées quinze fois, des blocs dupliqués. Refactorise-le en Sass propre, compile-le, et livre un CSS identique visuellement mais maintenable.</p>
+  <Chrono minutes={45} />
+
+  <h2>Les consignes</h2>
+  <ol>
+    <li>Crée <code>style.scss</code> (et des partials si tu veux) à partir de <code>legacy.css</code>. Rien ne doit changer visuellement : compare avant et après dans le navigateur.</li>
+    <li>Extrais au moins les trois couleurs répétées en variables.</li>
+    <li>Repère les deux styles de bouton quasi identiques et factorise-les. Tu dois pouvoir justifier ton choix entre mixin et <code>@extend</code> si on te le demande.</li>
+    <li>Imbrique le bloc <code>.card</code> avec <code>&amp;</code> plutôt que des sélecteurs séparés.</li>
+    <li>Compile. À un moment, une erreur volontaire apparaîtra dans le message d'erreur : ne la contourne pas en réécrivant tout, diagnostique-la à partir du message affiché.</li>
+  </ol>
+
+  <h2>Deux façons de travailler</h2>
+  <p><strong>Dans le navigateur</strong> : l'éditeur ci-dessous compile pendant que tu tapes. Le fichier <code>_effects.scss</code> est déjà là, prêt à être utilisé avec <code>@use</code>.</p>
+  <SassEditor initial={start} partials={[{ name: "_effects.scss", content: effectsPartial }]} label="Écris ton style.scss, le CSS se met à jour à droite" />
+  <p><strong>Sur ton poste</strong> : télécharge <a href={`${base}tp/legacy.css`} download>legacy.css</a>, <a href={`${base}tp/_effects.scss`} download>_effects.scss</a> et <a href={`${base}tp/sauvetage-index.html`} download>sauvetage-index.html</a> dans un même dossier (renomme <code>sauvetage-index.html</code> en <code>index.html</code>), puis lance <code>npx sass style.scss style.css --watch</code>.</p>
+
+  <details>
+    <summary>Version guidée : pas à pas</summary>
+    <ol>
+      <li>Repère et note les trois couleurs répétées (surligne-les dans <code>legacy.css</code>).</li>
+      <li>Crée <code>$primary-color</code>, <code>$danger-color</code> et <code>$text-color</code> en haut de <code>style.scss</code>.</li>
+      <li>Remplace chaque couleur écrite en dur par sa variable.</li>
+      <li>Compare <code>.btn-primary</code> et <code>.btn-danger</code> : qu'est-ce qui est identique, qu'est-ce qui change ? Cela détermine le paramètre du mixin.</li>
+      <li>Écris le mixin, appelle-le deux fois.</li>
+      <li>Imbrique <code>.card</code> : mets <code>.card-title</code> et <code>.card-hover</code> dans les accolades de <code>.card</code>, remplace <code>.card-hover</code> par <code>&amp;:hover</code> ou un enfant imbriqué.</li>
+      <li>Lis le message d'erreur ligne par ligne avant de toucher au code.</li>
+    </ol>
+  </details>
+  <details>
+    <summary>Défi en plus</summary>
+    <p>Range le code en plusieurs fichiers avec au moins un <code>@use</code> vers un partial, au lieu d'un seul <code>style.scss</code>.</p>
+  </details>
+
+  <h2>Préparer la restitution</h2>
+  <p>Un groupe présentera en deux minutes : son choix entre mixin et <code>@extend</code> et pourquoi, puis comment il a diagnostiqué l'erreur volontaire.</p>
+  <Notes id="restitution" label="Les notes de mon groupe" rows={5} />
+</Base>

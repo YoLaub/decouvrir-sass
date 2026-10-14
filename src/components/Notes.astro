@@ -1,0 +1,32 @@
+---
+interface Props { id: string; label: string; rows?: number; placeholder?: string; initial?: string }
+const { id, label, rows = 6, initial = "", placeholder = "Écris ici. Tes notes restent dans ce navigateur." } = Astro.props;
+---
+<div class="notes" data-notes={id}>
+  <label for={`n-${id}`}>{label}</label>
+  <textarea id={`n-${id}`} rows={rows} placeholder={placeholder}>{initial}</textarea>
+  <button type="button" class="copy">Copier mes notes</button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-notes]").forEach((root) => {
+    const key = `notes:${location.pathname}:${root.dataset.notes}`;
+    const area = root.querySelector<HTMLTextAreaElement>("textarea")!;
+    const copy = root.querySelector<HTMLButtonElement>(".copy")!;
+    try { area.value = localStorage.getItem(key) ?? area.value; } catch {}
+    area.addEventListener("input", () => { try { localStorage.setItem(key, area.value); } catch {} });
+    copy.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(area.value); copy.textContent = "Copié ✓"; }
+      catch { area.select(); copy.textContent = "Sélectionné : Ctrl+C"; }
+      window.setTimeout(() => (copy.textContent = "Copier mes notes"), 2000);
+    });
+  });
+</script>
+
+<style>
+  .notes { margin: 20px 0; }
+  label { display: block; font-weight: 700; margin-bottom: 6px; }
+  textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--line); border-radius: 12px; font: 16px/1.5 Inter, system-ui, sans-serif; background: var(--panel); resize: vertical; }
+  textarea:focus { outline: none; border-color: var(--accent); }
+  button { margin-top: 8px; font: 600 15px Inter, system-ui, sans-serif; padding: 8px 14px; border-radius: 8px; border: 2px solid var(--line); background: var(--panel); cursor: pointer; }
+</style>

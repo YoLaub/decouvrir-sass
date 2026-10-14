@@ -21,3 +21,11 @@ Pushing to `main` deploys it through GitHub Actions.
 
 Create `src/pages/<slug>.astro` and add the slug to `src/lib/pages.ts`, which drives the
 index and the previous/next navigation.
+
+## Sauvetage du CSS legacy (hands-on activity)
+
+The activity lives at `/tp/` (not linked from the course pages: the trainer shares the URL).
+Starter files are defined once in `src/lib/sauvetage.ts` and mirrored in `public/tp/` for
+download; a test keeps both in sync and checks the starter compiles and the effects partial
+fails with a readable error. Answer keys and observation notes are trainer-only and never
+committed here. The page carries `noindex`.
