@@ -1,0 +1,9 @@
+// _effects.scss : ombres réutilisables
+@mixin lift($shadow) {
+  box-shadow: 0 4px 12px $shadow;
+  transform: translateY(-2px);
+}
+
+.card-hover:hover {
+  @include lift;
+}
