@@ -1,6 +1,5 @@
 ---
 import Base from "../../layouts/Base.astro";
-import Chrono from "../../components/Chrono.astro";
 import Notes from "../../components/Notes.astro";
 const base = import.meta.env.BASE_URL;
 ---
@@ -11,7 +10,6 @@ const base = import.meta.env.BASE_URL;
   <h2>La mission</h2>
   <p>Tu reprends le CSS d'un site vitrine laissé par un développeur parti sans documentation : 168 lignes, des couleurs écrites des dizaines de fois, cinq boutons presque identiques, trois cartes qui répètent le même bloc, des sélecteurs interminables.</p>
   <p>Ta mission : le refaire en Sass propre, <strong>sans rien changer visuellement</strong>. Un script vérifie à ta place que chaque règle d'origine est restée identique.</p>
-  <Chrono minutes={120} />
 
   <h2>Les fichiers à télécharger</h2>
   <ul>
