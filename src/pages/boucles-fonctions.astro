@@ -1,0 +1,70 @@
+---
+import Base from "../layouts/Base.astro";
+import SassEditor from "../components/SassEditor.astro";
+import { examples } from "../lib/boucles";
+---
+<Base title="Boucles, fonctions et conditions">
+  <h1>Une boucle écrit à ta place des dizaines de règles</h1>
+  <p class="lead">Sass est un vrai langage : il a des listes, des boucles, des fonctions et des conditions. Tu les connais déjà d'un autre langage, seule la syntaxe change. Chaque exemple est modifiable : change le code et regarde le CSS généré à droite.</p>
+
+  <h2>1. Une boucle sur une map avec @each</h2>
+  <p>Une <strong>map</strong> est un dictionnaire : des paires <code>clé: valeur</code> entre parenthèses, séparées par des virgules. <code>@each $nom, $couleur in $couleurs</code> lit une paire à chaque tour : au premier tour <code>$nom</code> vaut <code>'primary'</code>, au deuxième <code>'danger'</code>, et ainsi de suite.</p>
+  <p>Pour fabriquer un nom de classe à partir d'une variable, on utilise l'<strong>interpolation</strong> <code>#&#123;$nom&#125;</code>. Sans elle, Sass écrirait littéralement <code>.btn-$nom</code>.</p>
+  <SassEditor initial={examples.each} />
+  <p><strong>À toi :</strong> ajoute <code>'warning': #e67e22,</code> dans la map. Une règle <code>.btn-warning</code> apparaît sans que tu écrives autre chose. Oublie la virgule entre deux paires : Sass signale l'erreur.</p>
+
+  <h2>2. Une suite de nombres avec @for</h2>
+  <p><code>@for $i from 1 through 5</code> répète le bloc cinq fois, avec <code>$i</code> qui vaut 1, puis 2, jusqu'à 5. Ici on fabrique une échelle d'espacements : <code>.mt-1</code> vaut 8 px, <code>.mt-2</code> vaut 16 px, etc.</p>
+  <SassEditor initial={examples.for} />
+  <p><strong>À toi :</strong> remplace <code>through</code> par <code>to</code>. <code>.mt-5</code> disparaît : <code>through</code> inclut la dernière valeur, <code>to</code> l'exclut. C'est la source d'erreur la plus courante avec cette boucle.</p>
+
+  <h2>3. Une grille de 12 colonnes avec math.div</h2>
+  <p>Pour diviser, Sass demande <code>math.div($i, 12)</code> au lieu de <code>$i / 12</code>. Le caractère <code>/</code> existe déjà en CSS avec un autre sens (<code>font: 12px/1.5</code>), et Sass a abandonné son ancien usage pour la division. La ligne <code>@use 'sass:math'</code> en haut du fichier charge les fonctions de calcul.</p>
+  <p>On obtient une fraction entre 0 et 1, qu'on multiplie par <code>100%</code> : <code>.col-3</code> vaut 25 %, <code>.col-7</code> vaut 58,33 %.</p>
+  <SassEditor initial={examples.grid} />
+  <p><strong>À toi :</strong> remplace les deux <code>12</code> par <code>6</code> pour obtenir une grille de 6 colonnes. Vérifie que <code>.col-6</code> fait bien 100 %.</p>
+
+  <h2>4. Une fonction avec @function</h2>
+  <p>Une <strong>fonction</strong> calcule une valeur et la renvoie avec <code>@return</code>. Tu l'utilises à la place d'une valeur, par exemple <code>font-size: rem(32)</code>. Un mixin, lui, produit des déclarations CSS entières : c'est la différence entre les deux.</p>
+  <p>Ici <code>rem(32)</code> convertit des pixels en <code>rem</code> (32 divisé par 16 donne <code>2rem</code>). Le paramètre <code>$base: 16</code> a une valeur par défaut, comme dans n'importe quel langage.</p>
+  <SassEditor initial={examples.function} />
+  <p><strong>À toi :</strong> écris <code>rem(20, 10)</code> à la place de <code>rem(32)</code>. Tu changes la base de conversion pour cet appel seulement.</p>
+
+  <h2>5. Une décision avec @if et @else</h2>
+  <p>Même idée qu'un <code>if</code> en PHP ou en JavaScript. On compare avec <code>==</code>, et la suite s'écrit <code>@else if</code> (deux mots) puis <code>@else</code>. Ici le mixin <code>alerte</code> choisit les couleurs selon le niveau reçu.</p>
+  <SassEditor initial={examples.if} />
+  <p><strong>À toi :</strong> ajoute <code>.alerte-test &#123; @include alerte('warning'); &#125;</code>. Aucun <code>if</code> ne correspond à <code>'warning'</code>, donc c'est le <code>@else</code> qui s'applique : les couleurs de l'info.</p>
+
+  <h2>6. Un bloc passé à un mixin avec @content</h2>
+  <p>Un mixin peut recevoir un <strong>bloc de code</strong> de la part de celui qui l'appelle. À l'endroit où le mixin écrit <code>@content</code>, Sass colle ce bloc. Ici le mixin <code>sous</code> enveloppe le bloc dans la bonne media query : le point de rupture est écrit à un seul endroit, dans la map.</p>
+  <p><code>map.get($points, $nom)</code> lit une valeur dans la map à partir de sa clé.</p>
+  <SassEditor initial={examples.content} />
+  <p><strong>À toi :</strong> dans <code>.sidebar</code>, ajoute <code>@include sous('mobile') &#123; width: 90%; &#125;</code>. Une deuxième media query apparaît, avec le point de rupture de 480 px.</p>
+
+  <h2>7. Une map dans une map</h2>
+  <p>Une valeur de map peut elle-même être une map. Ici chaque thème contient un fond et un texte. La boucle lit d'abord le nom du thème, puis <code>map.get($t, 'fond')</code> va chercher le détail. Ajouter un thème revient à ajouter une ligne dans la map.</p>
+  <SassEditor initial={examples.themes} />
+  <p><strong>À toi :</strong> ajoute un thème <code>'contraste': ('fond': #000000, 'texte': #ffff00)</code>. La classe <code>.theme-contraste</code> apparaît toute seule.</p>
+
+  <h2>Quel outil pour quel besoin</h2>
+  <table>
+    <thead><tr><th>Ce que tu veux</th><th>Ce que tu utilises</th></tr></thead>
+    <tbody>
+      <tr><td>La même règle pour une liste de valeurs nommées</td><td><code>@each</code> sur une map</td></tr>
+      <tr><td>Une suite de nombres (espacements, colonnes)</td><td><code>@for</code></td></tr>
+      <tr><td>Un calcul que tu refais souvent</td><td><code>@function</code></td></tr>
+      <tr><td>Un bloc de CSS réutilisable avec des paramètres</td><td><code>@mixin</code></td></tr>
+      <tr><td>Un choix selon un paramètre</td><td><code>@if</code> et <code>@else</code></td></tr>
+      <tr><td>Un bloc qui change à l'intérieur d'un cadre fixe (media query)</td><td><code>@content</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Le garde-fou</h2>
+  <p>Une boucle cache le CSS qu'elle produit : quelques lignes de Sass peuvent en générer des centaines, que le navigateur devra tout de même télécharger. Compile et regarde le résultat à chaque fois. Si tu n'as que deux ou trois éléments, deux appels de mixin sont plus lisibles qu'une boucle. Réserve les boucles aux listes qui sont vraiment répétitives et qui vont grandir.</p>
+</Base>
+
+<style>
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; background: var(--panel); }
+  th, td { border: 1px solid var(--line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: #eceef5; }
+</style>

@@ -24,11 +24,12 @@ describe("neighbors", () => {
   });
 
   it("lists the course pages in teaching order", () => {
-    expect(pages.map((p) => p.slug).slice(0, 5)).toEqual([
+    expect(pages.map((p) => p.slug).slice(0, 6)).toEqual([
       "variables",
       "imbrication",
       "partials",
       "mixins-extend",
+      "boucles-fonctions",
       "compilation",
     ]);
   });

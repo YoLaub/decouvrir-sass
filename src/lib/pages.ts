@@ -5,6 +5,7 @@ export const pages: Page[] = [
   { slug: "imbrication", title: "Imbrication" },
   { slug: "partials", title: "Partials et @use" },
   { slug: "mixins-extend", title: "Mixins et @extend" },
+  { slug: "boucles-fonctions", title: "Boucles, fonctions et conditions" },
   { slug: "compilation", title: "Compiler et diagnostiquer" },
   { slug: "evaluation", title: "Teste tes acquis" },
   { slug: "aller-plus-loin", title: "Aller plus loin" },
