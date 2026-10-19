@@ -1,55 +1,83 @@
 ---
 import Base from "../../layouts/Base.astro";
-import SassEditor from "../../components/SassEditor.astro";
 import Chrono from "../../components/Chrono.astro";
 import Notes from "../../components/Notes.astro";
-import { legacyCss, effectsPartial } from "../../lib/sauvetage";
 const base = import.meta.env.BASE_URL;
-const start = `// Refactorise legacy.css ici, sans rien changer visuellement.
-// Idée bonus : @use "effects"; pour un effet de survol sur les cartes.
-
-${legacyCss}`;
 ---
-<Base title="Sauvetage du CSS legacy">
-  <h1>Le sauvetage du CSS legacy</h1>
-  <p class="lead">En petits groupes de trois, pendant environ 45 minutes, puis une restitution courte de 15 minutes.</p>
+<Base title="Le grand ménage du CSS">
+  <h1>Le grand ménage du CSS</h1>
+  <p class="lead">En groupes de trois, de 13h à 15h : 1h pour ranger le fichier, 30 minutes pour pousser Sass plus loin, 15 minutes pour présenter.</p>
 
   <h2>La mission</h2>
-  <p>Tu reprends le CSS d'un projet laissé par un développeur parti sans documentation : situation que tu croiseras en vrai. Le fichier fonctionne, mais il est pénible à maintenir : des couleurs répétées quinze fois, des blocs dupliqués. Refactorise-le en Sass propre, compile-le, et livre un CSS identique visuellement mais maintenable.</p>
-  <Chrono minutes={45} />
+  <p>Tu reprends le CSS d'un site vitrine laissé par un développeur parti sans documentation : 168 lignes, des couleurs écrites des dizaines de fois, cinq boutons presque identiques, trois cartes qui répètent le même bloc, des sélecteurs interminables.</p>
+  <p>Ta mission : le refaire en Sass propre, <strong>sans rien changer visuellement</strong>. Un script vérifie à ta place que chaque règle d'origine est restée identique.</p>
+  <Chrono minutes={120} />
 
-  <h2>Les consignes</h2>
+  <h2>Les fichiers à télécharger</h2>
+  <ul>
+    <li><a href={`${base}tp/legacy-enorme.css`} download>legacy-enorme.css</a> : le CSS d'origine à nettoyer.</li>
+    <li><a href={`${base}tp/grand-menage-index.html`} download>grand-menage-index.html</a> : une page qui utilise tous les composants. C'est ta référence visuelle.</li>
+    <li><a href={`${base}tp/verifier.mjs`} download>verifier.mjs</a> : le script qui compare ton CSS avec l'original.</li>
+  </ul>
+
+  <h2>La mise en place (10 minutes)</h2>
   <ol>
-    <li>Crée <code>style.scss</code> (et des partials si tu veux) à partir de <code>legacy.css</code>. Rien ne doit changer visuellement : compare avant et après dans le navigateur.</li>
-    <li>Extrais au moins les trois couleurs répétées en variables.</li>
-    <li>Repère les deux styles de bouton quasi identiques et factorise-les. Tu dois pouvoir justifier ton choix entre mixin et <code>@extend</code> si on te le demande.</li>
-    <li>Imbrique le bloc <code>.card</code> avec <code>&amp;</code> plutôt que des sélecteurs séparés.</li>
-    <li>Compile. À un moment, une erreur volontaire apparaîtra dans le message d'erreur : ne la contourne pas en réécrivant tout, diagnostique-la à partir du message affiché.</li>
+    <li>Crée un dossier <code>grand-menage</code> et mets-y les trois fichiers. Renomme <code>grand-menage-index.html</code> en <code>index.html</code>.</li>
+    <li>Copie <code>legacy-enorme.css</code> sous le nom <code>style.scss</code>. Un fichier CSS est déjà du SCSS valide, tu peux donc partir de là.</li>
+    <li>Dans un premier terminal, lance la compilation en continu : <code>npx sass style.scss style.css --watch</code>.</li>
+    <li>Ouvre <code>index.html</code> dans le navigateur. La page doit s'afficher correctement : garde cet onglet pour comparer.</li>
+    <li>Dans un deuxième terminal, lance le script : <code>node verifier.mjs legacy-enorme.css style.css</code>. Il doit répondre <code>OK</code>. À partir de maintenant, il doit toujours répondre <code>OK</code>.</li>
+  </ol>
+  <p>Si tu n'as pas encore installé Node et Sass sur ton poste, demande la fiche d'installation au formateur.</p>
+
+  <h2>Phase 1 : ranger le fichier (environ 1 heure)</h2>
+  <p>Avance dans l'ordre. Après chaque étape, regarde le terminal du script : s'il passe à « À revoir », la dernière modification a changé quelque chose.</p>
+  <ol>
+    <li><strong>Les variables.</strong> Crée <code>_variables.scss</code> avec les couleurs qui reviennent : le bleu <code>#2c5aa0</code>, le rouge <code>#c0392b</code>, le vert <code>#27ae60</code>, l'orange <code>#e67e22</code>, le texte <code>#333333</code>, les gris et les versions plus foncées utilisées au survol. Objectif : plus aucune couleur écrite en dur dans <code>style.scss</code>.</li>
+    <li><strong>Les boutons.</strong> Les cinq boutons (<code>.btn-primary</code>, <code>-danger</code>, <code>-success</code>, <code>-warning</code>, <code>-secondary</code>) ne diffèrent que par leurs couleurs. Écris un mixin à deux paramètres : la couleur du bouton et sa couleur au survol.</li>
+    <li><strong>Les alertes.</strong> Même idée pour les quatre alertes (<code>.alert</code>, <code>-info</code>, <code>-success</code>, <code>-warning</code>) : repère ce qui change et ce qui reste, puis écris un mixin.</li>
+    <li><strong>Les cartes.</strong> <code>.card</code>, <code>.card-product</code> et <code>.card-article</code> commencent par le même bloc de règles. Factorise-les avec <code>@extend</code> sur un placeholder. Prépare ta réponse : pourquoi un <code>@extend</code> et pas un mixin pour les cartes, alors que c'est l'inverse pour les boutons ?</li>
+    <li><strong>L'imbrication.</strong> Imbrique le header, la barre latérale, les tableaux, la pagination, le pied de page et le formulaire. Utilise <code>&amp;</code> pour les états (<code>&amp;:hover</code>, <code>&amp;.active</code>) et les suffixes (<code>&amp;-title</code>). Ne dépasse pas 3 niveaux de sélecteurs : un <code>&amp;:hover</code> ne compte pas. Garde le sélecteur <code>#main .content .section .box</code> tel quel : le script vérifie qu'il existe toujours.</li>
+    <li><strong>Les partials.</strong> Range le code dans au moins trois fichiers : <code>_variables.scss</code>, <code>_mixins.scss</code> et <code>style.scss</code>, qui les charge avec <code>@use</code>.</li>
+    <li><strong>Le contrôle final.</strong> Le script répond <code>OK</code>, et la page <code>index.html</code> est identique à la référence que tu as gardée.</li>
   </ol>
 
-  <h2>Deux façons de travailler</h2>
-  <p><strong>Dans le navigateur</strong> : l'éditeur ci-dessous compile pendant que tu tapes. Le fichier <code>_effects.scss</code> est déjà là, prêt à être utilisé avec <code>@use</code>.</p>
-  <SassEditor initial={start} partials={[{ name: "_effects.scss", content: effectsPartial }]} label="Écris ton style.scss, le CSS se met à jour à droite" />
-  <p><strong>Sur ton poste</strong> : télécharge <a href={`${base}tp/legacy.css`} download>legacy.css</a>, <a href={`${base}tp/_effects.scss`} download>_effects.scss</a> et <a href={`${base}tp/sauvetage-index.html`} download>sauvetage-index.html</a> dans un même dossier (renomme <code>sauvetage-index.html</code> en <code>index.html</code>), puis lance <code>npx sass style.scss style.css --watch</code>.</p>
-
   <details>
-    <summary>Version guidée : pas à pas</summary>
-    <ol>
-      <li>Repère et note les trois couleurs répétées (surligne-les dans <code>legacy.css</code>).</li>
-      <li>Crée <code>$primary-color</code>, <code>$danger-color</code> et <code>$text-color</code> en haut de <code>style.scss</code>.</li>
-      <li>Remplace chaque couleur écrite en dur par sa variable.</li>
-      <li>Compare <code>.btn-primary</code> et <code>.btn-danger</code> : qu'est-ce qui est identique, qu'est-ce qui change ? Cela détermine le paramètre du mixin.</li>
-      <li>Écris le mixin, appelle-le deux fois.</li>
-      <li>Imbrique <code>.card</code> : mets <code>.card-title</code> et <code>.card-hover</code> dans les accolades de <code>.card</code>, remplace <code>.card-hover</code> par <code>&amp;:hover</code> ou un enfant imbriqué.</li>
-      <li>Lis le message d'erreur ligne par ligne avant de toucher au code.</li>
-    </ol>
-  </details>
-  <details>
-    <summary>Défi en plus</summary>
-    <p>Range le code en plusieurs fichiers avec au moins un <code>@use</code> vers un partial, au lieu d'un seul <code>style.scss</code>.</p>
+    <summary>Le script me répond « À revoir » : comment lire le message</summary>
+    <ul>
+      <li><code>Règle absente : .btn-danger:hover</code> : cette règle n'existe plus dans ton CSS. Tu l'as supprimée, ou son sélecteur est écrit autrement.</li>
+      <li><code>Règle modifiée : .card</code> suivi de <code>il manque : padding:16px</code> : une déclaration a disparu ou a changé de valeur.</li>
+      <li><code>en trop : margin:0</code> : tu as ajouté une déclaration qui n'existait pas dans l'original.</li>
+      <li>Une règle dans une media query s'affiche sous la forme <code>@media (max-width:768px) &#123; .sidebar &#125;</code>.</li>
+    </ul>
+    <p>Ouvre <code>style.css</code>, cherche le sélecteur cité, et compare avec <code>legacy-enorme.css</code>.</p>
   </details>
 
-  <h2>Préparer la restitution</h2>
-  <p>Un groupe présentera en deux minutes : son choix entre mixin et <code>@extend</code> et pourquoi, puis comment il a diagnostiqué l'erreur volontaire.</p>
+  <details>
+    <summary>Besoin d'un rappel sur une notion</summary>
+    <ul>
+      <li>Mixins et <code>@extend</code> : <a href={`${base}mixins-extend/`}>la page du cours</a>.</li>
+      <li>Imbrication et <code>&amp;</code> : <a href={`${base}imbrication/`}>la page du cours</a>.</li>
+      <li>Partials et <code>@use</code> : <a href={`${base}partials/`}>la page du cours</a>.</li>
+    </ul>
+  </details>
+
+  <h2>Phase 2 : pousser Sass (environ 30 minutes)</h2>
+  <p>Le script accepte les règles que tu ajoutes, il continue seulement à vérifier celles de l'original. Il doit rester sur <code>OK</code>. Toutes les notions sont expliquées dans <a href={`${base}boucles-fonctions/`}>la page « Boucles, fonctions et conditions »</a>.</p>
+  <ol>
+    <li><strong>Une boucle sur une map.</strong> Génère de nouveau les trois classes <code>.red</code>, <code>.blue</code> et <code>.green</code> avec un <code>@each</code> sur une map. Attention : leur <code>!important</code> doit rester.</li>
+    <li><strong>Une échelle d'espacements.</strong> Avec un <code>@for</code>, crée <code>.mt-1</code> à <code>.mt-5</code> et <code>.mb-1</code> à <code>.mb-5</code> (8 px, 16 px, 24 px...).</li>
+    <li><strong>Une grille.</strong> Avec un <code>@for</code> et <code>math.div</code>, crée une grille de 12 colonnes : <code>.col-1</code> à <code>.col-12</code>.</li>
+    <li><strong>Les media queries.</strong> Mets les points de rupture (768 px et 480 px) dans une map, et écris un mixin <code>sous($nom)</code> avec <code>@content</code> pour remplacer les deux <code>@media (max-width: ...)</code> du fichier.</li>
+    <li><strong>Un défi.</strong> Écris une fonction <code>rem($px)</code> et utilise-la dans une nouvelle classe. Si tu remplaces les tailles existantes en pixels par des <code>rem</code>, le script te signalera les règles modifiées : essaie, et lis le message.</li>
+  </ol>
+
+  <h2>Préparer la présentation (15 minutes)</h2>
+  <p>Chaque groupe présente en deux minutes :</p>
+  <ul>
+    <li>le nombre de lignes de vos fichiers <code>.scss</code> comparé à celui de <code>style.css</code> ;</li>
+    <li>votre choix entre mixin et <code>@extend</code>, et pourquoi ;</li>
+    <li>la règle que le script vous a signalée, et comment vous l'avez trouvée.</li>
+  </ul>
   <Notes id="restitution" label="Les notes de mon groupe" rows={5} />
 </Base>

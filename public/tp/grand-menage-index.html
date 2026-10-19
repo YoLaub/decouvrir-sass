@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le grand ménage : page de contrôle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="header" class="clearfix">
+    <div class="logo"><a href="#">Mon site</a></div>
+    <ul>
+      <li><a href="#" class="active">Accueil</a></li>
+      <li><a href="#">Produits</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar">
+    <h3>Catégories</h3>
+    <ul>
+      <li><a href="#">Vêtements</a>
+        <ul>
+          <li><a href="#">Hommes</a></li>
+          <li><a href="#">Femmes</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Chaussures</a></li>
+      <li><a href="#">Accessoires</a></li>
+    </ul>
+  </div>
+
+  <div id="main">
+    <div class="content">
+      <div class="section">
+        <div class="box">
+          <h1>Titre de la page</h1>
+          <div class="title">Un bloc de contenu</div>
+          <div class="text">Un texte avec <a href="#">un lien</a>, pour vérifier la couleur et le survol.</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Boutons</h2>
+    <p>
+      <button class="btn-primary">Principal</button>
+      <button class="btn-danger">Danger</button>
+      <button class="btn-success">Succès</button>
+      <button class="btn-warning">Attention</button>
+      <button class="btn-secondary">Secondaire</button>
+    </p>
+    <p>
+      <button class="btn btn-primary btn-small">Petit</button>
+      <button class="btn btn-success btn-large">Grand</button>
+      <button class="btn btn-secondary btn-disabled">Désactivé</button>
+    </p>
+
+    <h2>Cartes</h2>
+    <div class="card card-hover">
+      <h3 class="card-title">Une carte avec survol</h3>
+      <p>Passe la souris dessus : elle monte et prend une ombre.</p>
+      <div class="card-footer">Pied de carte</div>
+    </div>
+    <div class="card-product">
+      <h3>Un produit</h3>
+      <span class="badge">Promo</span>
+      <p><span class="price">19,90 €</span> <span class="old-price">24,90 €</span></p>
+    </div>
+    <div class="card-article">
+      <h3>Un article</h3>
+      <p class="author">Par Camille</p>
+      <p class="date">12 octobre</p>
+    </div>
+
+    <h2>Alertes</h2>
+    <p class="alert">Une erreur est survenue.</p>
+    <p class="alert-info">Une information utile.</p>
+    <p class="alert-success">Tout s'est bien passé.</p>
+    <p class="alert-warning">Attention à ce point.</p>
+
+    <h2>Formulaire</h2>
+    <form>
+      <div class="form-group">
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" placeholder="Ton nom">
+      </div>
+      <div class="form-group has-success">
+        <label for="mail">Email</label>
+        <input type="email" id="mail" value="camille@example.org">
+      </div>
+      <div class="form-group has-error">
+        <label for="mdp">Mot de passe</label>
+        <input type="password" id="mdp" value="123">
+        <div class="error">Trop court.</div>
+      </div>
+      <div class="form-group">
+        <label for="msg">Message</label>
+        <textarea id="msg" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="choix">Choix</label>
+        <select id="choix"><option>Un</option><option>Deux</option></select>
+      </div>
+    </form>
+
+    <h2>Tableaux</h2>
+    <table>
+      <tr><th>Produit</th><th>Prix</th></tr>
+      <tr><td>Chemise</td><td>29 €</td></tr>
+      <tr><td>Pantalon</td><td>49 €</td></tr>
+      <tr><td>Veste</td><td>89 €</td></tr>
+    </table>
+    <table class="table-danger">
+      <tr><th>Erreurs</th><th>Nombre</th></tr>
+      <tr><td>Paiement refusé</td><td>3</td></tr>
+    </table>
+    <table class="table-success">
+      <tr><th>Commandes</th><th>Nombre</th></tr>
+      <tr><td>Livrées</td><td>42</td></tr>
+    </table>
+
+    <ul class="pagination">
+      <li class="disabled"><a href="#">Précédent</a></li>
+      <li class="active"><a href="#">1</a></li>
+      <li><a href="#">2</a></li>
+      <li><a href="#">3</a></li>
+      <li><a href="#">Suivant</a></li>
+    </ul>
+
+    <h2>Utilitaires</h2>
+    <p class="red">Texte rouge</p>
+    <p class="blue">Texte bleu</p>
+    <p class="green">Texte vert</p>
+    <p class="text-center mt-10 mb-10">Texte centré avec marges</p>
+    <p class="text-right">Texte à droite</p>
+  </div>
+
+  <div id="footer">
+    <div class="cols">
+      <div class="col">
+        <h3>À propos</h3>
+        <ul><li><a href="#">Qui sommes-nous</a></li><li><a href="#">Équipe</a></li></ul>
+      </div>
+      <div class="col">
+        <h3>Aide</h3>
+        <ul><li><a href="#">FAQ</a></li><li><a href="#">Livraison</a></li></ul>
+      </div>
+      <div class="col">
+        <h3>Légal</h3>
+        <ul><li><a href="#">Mentions légales</a></li><li><a href="#">Cookies</a></li></ul>
+      </div>
+    </div>
+    <div class="copyright">Mon site, tous droits réservés</div>
+  </div>
+</body>
+</html>
