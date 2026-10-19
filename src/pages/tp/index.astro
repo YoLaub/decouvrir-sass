@@ -6,7 +6,7 @@ const base = import.meta.env.BASE_URL;
 ---
 <Base title="Le grand ménage du CSS">
   <h1>Le grand ménage du CSS</h1>
-  <p class="lead">En groupes de trois, de 13h à 15h : 1h pour ranger le fichier, 30 minutes pour pousser Sass plus loin, 15 minutes pour présenter.</p>
+  <p class="lead">En groupes de trois, de 13h à 15h : 1h10 pour ranger le fichier (mise en place comprise), une pause de 15 minutes, 25 minutes pour pousser Sass plus loin, 10 minutes pour présenter.</p>
 
   <h2>La mission</h2>
   <p>Tu reprends le CSS d'un site vitrine laissé par un développeur parti sans documentation : 168 lignes, des couleurs écrites des dizaines de fois, cinq boutons presque identiques, trois cartes qui répètent le même bloc, des sélecteurs interminables.</p>
@@ -62,7 +62,10 @@ const base = import.meta.env.BASE_URL;
     </ul>
   </details>
 
-  <h2>Phase 2 : pousser Sass (environ 30 minutes)</h2>
+  <h2>Pause (15 minutes)</h2>
+  <p>Vers 14h10, quand le formateur l'annonce. Sauvegarde ton travail et laisse tourner <code>--watch</code>.</p>
+
+  <h2>Phase 2 : pousser Sass (environ 25 minutes)</h2>
   <p>Le script accepte les règles que tu ajoutes, il continue seulement à vérifier celles de l'original. Il doit rester sur <code>OK</code>. Toutes les notions sont expliquées dans <a href={`${base}boucles-fonctions/`}>la page « Boucles, fonctions et conditions »</a>.</p>
   <ol>
     <li><strong>Une boucle sur une map.</strong> Génère de nouveau les trois classes <code>.red</code>, <code>.blue</code> et <code>.green</code> avec un <code>@each</code> sur une map. Attention : leur <code>!important</code> doit rester.</li>
@@ -72,7 +75,7 @@ const base = import.meta.env.BASE_URL;
     <li><strong>Un défi.</strong> Écris une fonction <code>rem($px)</code> et utilise-la dans une nouvelle classe. Si tu remplaces les tailles existantes en pixels par des <code>rem</code>, le script te signalera les règles modifiées : essaie, et lis le message.</li>
   </ol>
 
-  <h2>Préparer la présentation (15 minutes)</h2>
+  <h2>Préparer la présentation (10 minutes)</h2>
   <p>Chaque groupe présente en deux minutes :</p>
   <ul>
     <li>le nombre de lignes de vos fichiers <code>.scss</code> comparé à celui de <code>style.css</code> ;</li>
